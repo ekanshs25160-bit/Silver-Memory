@@ -41,8 +41,18 @@ export const getTask = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
   const tasks = await Task.find({ project: projectId })
     .populate("assignedTo", "name email username")
-    .populate("createdBy", "name email username");
-  return res.status(200).json(new ApiResponse(200, tasks, "All tasks fetched"));
+    .populate("createdBy", "name email username")
+    .lean();
+
+  const taskIds = tasks.map(t => t._id);
+  const subtasks = await SubTask.find({ task: { $in: taskIds } }).lean();
+
+  const tasksWithSubtasks = tasks.map(task => ({
+    ...task,
+    subtasks: subtasks.filter(sub => sub.task.toString() === task._id.toString())
+  }));
+
+  return res.status(200).json(new ApiResponse(200, tasksWithSubtasks, "All tasks fetched"));
 });
 
 export const getTaskById = asyncHandler(async (req, res) => {

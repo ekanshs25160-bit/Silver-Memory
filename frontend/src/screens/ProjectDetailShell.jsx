@@ -2,15 +2,18 @@ import React, { useEffect } from 'react';
 import { Outlet, useParams, Link, useLocation } from 'react-router-dom';
 import { Avatar, Badge, Button } from '../components/ui';
 import { useProject } from '../hooks/useProjects';
+import { useMembers } from '../hooks/useMembers';
 
 export default function ProjectDetailShell() {
   const { projectId } = useParams();
   const location = useLocation();
   const { project, isLoading, error, fetchProject } = useProject(projectId);
+  const { members, fetchMembers } = useMembers(projectId);
 
   useEffect(() => {
     fetchProject();
-  }, [fetchProject]);
+    fetchMembers();
+  }, [fetchProject, fetchMembers]);
 
   const currentTab = location.pathname.split('/').pop();
 
@@ -42,7 +45,16 @@ export default function ProjectDetailShell() {
           </div>
           <div className="flex items-center space-x-3">
             <div className="flex -space-x-1.5 items-center mr-2">
-              <div className="w-8 h-8 rounded-full border border-surface-container-lowest bg-surface-container-high flex items-center justify-center text-xs">...</div>
+              {members.slice(0, 3).map(member => (
+                <div key={member._id || member.id} className="relative ring-2 ring-surface-container-lowest rounded-full overflow-hidden w-8 h-8">
+                  <Avatar src={member.user?.avatar} initials={member.user?.initials || member.user?.name?.charAt(0) || 'U'} size="sm" />
+                </div>
+              ))}
+              {members.length > 3 && (
+                <div className="relative ring-2 ring-surface-container-lowest rounded-full w-8 h-8 bg-surface-container-high flex items-center justify-center text-[10px] font-medium text-on-surface-variant">
+                  +{members.length - 3}
+                </div>
+              )}
             </div>
             <Button variant="secondary" icon="share">Share</Button>
           </div>

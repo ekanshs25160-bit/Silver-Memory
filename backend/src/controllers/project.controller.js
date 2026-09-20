@@ -30,7 +30,15 @@ export const createProject = asyncHandler(async (req, res) => {
 });
 
 export const getProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find({});
+  const memberDocs = await ProjectMember.find({ user: req.user._id });
+  const projectIds = memberDocs.map(m => m.project);
+
+  const projects = await Project.find({
+    $or: [
+      { owner: req.user._id },
+      { _id: { $in: projectIds } }
+    ]
+  });
 
   return res
     .status(200)
@@ -105,7 +113,7 @@ export const addMembersToProject = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
-  await ProjectMember.findOneAndUpdate(
+  const member = await ProjectMember.findOneAndUpdate(
     {
       user: new mongoose.Types.ObjectId(user.id),
       project: new mongoose.Types.ObjectId(projectId),
@@ -119,11 +127,11 @@ export const addMembersToProject = asyncHandler(async (req, res) => {
       new: true,
       upsert: true,
     },
-  );
+  ).populate("user", "name email username");
 
   return res
     .status(201)
-    .json(new ApiResponse(201, {}, "Project Member added successfully"));
+    .json(new ApiResponse(201, member, "Project Member added successfully"));
 });
 
 export const getProjectMembers = asyncHandler(async (req, res) => {

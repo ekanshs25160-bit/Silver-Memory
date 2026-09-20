@@ -64,7 +64,7 @@ export default function ProjectDetailTasks() {
                         )}
                       </div>
                     </div>
-                    {task.assignee && <Avatar src={task.assignee.avatar} initials={task.assignee.initials || 'A'} size="sm" />}
+                    {task.assignedTo && <Avatar src={task.assignedTo.avatar} initials={task.assignedTo.initials || task.assignedTo.name?.charAt(0) || 'A'} size="sm" />}
                   </div>
                 </div>
               ))}

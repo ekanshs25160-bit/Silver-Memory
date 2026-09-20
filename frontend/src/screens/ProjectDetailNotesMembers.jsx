@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Avatar, Badge, Button, Input } from '../components/ui';
 import { useNotes } from '../hooks/useNotes';
@@ -11,6 +11,7 @@ export default function ProjectDetailNotesMembers() {
   
   const [newNote, setNewNote] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
+  const noteInputRef = useRef(null);
 
   useEffect(() => {
     fetchNotes();
@@ -44,12 +45,13 @@ export default function ProjectDetailNotesMembers() {
       <div className="flex-1 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="font-headline-md font-semibold text-on-surface">Project Notes</h2>
-          <Button variant="primary" icon="edit" onClick={handlePublish}>New Note</Button>
+          <Button variant="primary" icon="edit" onClick={() => noteInputRef.current?.focus()}>New Note</Button>
         </div>
 
         {/* New Note Input */}
         <div className="bg-surface-container-lowest border border-surface-variant rounded-xl p-4">
           <textarea 
+            ref={noteInputRef}
             className="w-full bg-transparent border-none outline-none resize-none min-h-[100px] text-body-sm font-body-sm"
             placeholder="Write an update, decision, or notes (Markdown supported)..."
             value={newNote}
@@ -65,12 +67,12 @@ export default function ProjectDetailNotesMembers() {
           {notes.map(note => (
             <div key={note._id || note.id} className="bg-surface-container-lowest border border-surface-variant rounded-xl p-5 hover:shadow-sm transition-shadow">
               <div className="flex items-start gap-3">
-                <Avatar src={note.author?.avatar} initials={note.author?.initials || 'U'} size="lg" />
+                <Avatar src={note.createdBy?.avatar} initials={note.createdBy?.initials || note.createdBy?.name?.charAt(0) || 'U'} size="lg" />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-label-md font-semibold text-on-surface">{note.author?.name || 'User'}</span>
-                      <Badge variant={note.author?.role === 'Admin' ? 'admin' : 'secondary'}>{note.author?.role || 'Member'}</Badge>
+                      <span className="font-label-md font-semibold text-on-surface">{note.createdBy?.name || 'User'}</span>
+                      <Badge variant={note.createdBy?.role === 'Admin' ? 'admin' : 'secondary'}>{note.createdBy?.role || 'Member'}</Badge>
                       <span className="text-xs text-outline">• {new Date(note.createdAt || Date.now()).toLocaleDateString()}</span>
                     </div>
                     <button className="text-on-surface-variant hover:text-on-surface"><span className="material-symbols-outlined text-lg">more_horiz</span></button>
