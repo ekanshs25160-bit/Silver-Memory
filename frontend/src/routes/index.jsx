@@ -38,12 +38,15 @@ const AuthWrapper = () => {
       if (data.mode === 'login') {
         await login({ email: data.email, password: data.password });
       } else {
+        // Register the user
         await register({
-          fullName: data.fullName,
+          name: data.fullName,
           email: data.email,
           username: data.username,
           password: data.password
         });
+        // Auto-login the user immediately after successful registration
+        await login({ email: data.email, password: data.password });
       }
     } catch (err) {
       alert(err.message || 'Authentication failed');
