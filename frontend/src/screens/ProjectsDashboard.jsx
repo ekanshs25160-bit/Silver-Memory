@@ -8,6 +8,7 @@ export default function ProjectsDashboard() {
   const { projects, isLoading, error, fetchProjects, createProject } = useProjects();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', description: '', visibility: 'private', lead: '', template: 'blank' });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchProjects();
@@ -27,6 +28,11 @@ export default function ProjectsDashboard() {
     navigate(`/projects/${project._id}/tasks`);
   };
 
+  const filteredProjects = projects.filter(p => 
+    (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (p.description || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="bg-background text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col">
       {/* TOP NAVIGATION */}
@@ -38,30 +44,25 @@ export default function ProjectsDashboard() {
             </div>
             <span className="text-headline-sm font-headline-sm font-semibold tracking-tight text-on-surface">Silver Memory</span>
           </div>
-          <div className="relative group">
-            <button className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-surface-container-low border border-surface-variant hover:bg-surface-container-high transition-colors">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-              <span className="font-label-md text-label-md text-on-surface font-medium">Acme Studio (Pro)</span>
-              <span className="material-symbols-outlined text-on-surface-variant text-[16px]">unfold_more</span>
-            </button>
-          </div>
+          
           <nav className="hidden md:flex items-center space-x-6 pt-3 h-12">
-            <a className="text-on-surface-variant hover:text-on-surface pb-3 font-label-md text-label-md transition-colors" href="#">Workspaces</a>
-            <a className="text-primary font-semibold border-b-2 border-primary pb-3 font-label-md text-label-md flex items-center gap-1" href="#">
-              Projects <span className="px-1.5 py-0.2 bg-primary-fixed text-on-primary-fixed rounded-full text-label-sm font-label-sm font-semibold">6</span>
-            </a>
-            <a className="text-on-surface-variant hover:text-on-surface pb-3 font-label-md text-label-md transition-colors" href="#">Analytics</a>
+            <span className="text-primary font-semibold border-b-2 border-primary pb-3 font-label-md text-label-md flex items-center gap-1">
+              Projects <span className="px-1.5 py-0.2 bg-primary-fixed text-on-primary-fixed rounded-full text-label-sm font-label-sm font-semibold">{projects.length}</span>
+            </span>
           </nav>
         </div>
         <div className="flex items-center space-x-3">
           <div className="relative hidden sm:block">
-            <button className="flex items-center space-x-2 bg-surface-container-low border border-surface-variant rounded-lg px-3 py-1 text-on-surface-variant hover:border-outline transition-colors text-body-sm w-44 justify-between">
-              <div className="flex items-center space-x-1.5">
-                <span className="material-symbols-outlined text-[16px]">search</span>
-                <span>Search...</span>
-              </div>
-              <kbd className="font-code-sm text-code-sm bg-surface-container-lowest border border-surface-variant px-1.5 py-0.5 rounded text-[10px] text-outline font-medium">Cmd+K</kbd>
-            </button>
+            <div className="flex items-center bg-surface-container-low border border-surface-variant rounded-lg px-3 py-1 text-on-surface-variant focus-within:border-outline transition-colors w-44 focus-within:w-60">
+              <span className="material-symbols-outlined text-[16px] mr-1.5">search</span>
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                className="bg-transparent border-none outline-none text-body-sm w-full text-on-surface placeholder:text-on-surface-variant"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
           <button className="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low">
             <span className="material-symbols-outlined">notifications</span>
@@ -83,23 +84,12 @@ export default function ProjectsDashboard() {
         {/* LEFT SIDEBAR */}
         <aside className="hidden lg:flex flex-col justify-between h-[calc(100vh-48px)] w-60 p-3 border-r border-surface-variant bg-surface-container-lowest shrink-0 select-none">
           <div className="space-y-4">
-            <div className="flex items-center justify-between px-2 py-1.5">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center font-headline-sm text-headline-sm font-bold border border-surface-variant">
-                  AC
-                </div>
-                <div>
-                  <div className="font-headline-sm text-headline-sm font-bold text-on-surface leading-tight">Acme Workspace</div>
-                  <div className="font-body-sm text-body-sm text-on-surface-variant leading-none">Engineering Core</div>
-                </div>
-              </div>
-            </div>
             <button className="w-full flex items-center justify-center space-x-1.5 h-8 px-3 rounded-lg border border-surface-variant bg-surface-container-lowest hover:bg-surface-container-low font-label-md text-label-md text-on-surface font-medium transition-colors">
               <span className="material-symbols-outlined text-[16px] text-primary">add_task</span>
               <span>+ Add Task</span>
             </button>
             <nav className="space-y-1">
-              {['Tasks', 'Notes', 'Board', 'Members', 'Settings'].map((item) => (
+              {['Tasks', 'Notes'].map((item) => (
                 <a key={item} href="#" className="flex items-center space-x-2.5 text-on-surface-variant hover:text-on-surface rounded-lg px-3 py-2 font-label-md text-label-md hover:bg-surface-container-low transition-colors">
                   <span>{item}</span>
                 </a>
@@ -113,11 +103,6 @@ export default function ProjectsDashboard() {
           <div className="max-w-[1280px] mx-auto space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <div className="flex items-center space-x-2 text-body-sm font-body-sm text-on-surface-variant mb-1">
-                  <span>Acme Studio</span>
-                  <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-                  <span className="text-on-surface font-medium">Core Workspace</span>
-                </div>
                 <h1 className="font-headline-xl text-headline-xl font-bold tracking-tight text-on-surface">Projects</h1>
                 <p className="font-body-md text-body-md text-on-surface-variant mt-0.5">All active workspaces and team initiatives</p>
               </div>
@@ -126,9 +111,9 @@ export default function ProjectsDashboard() {
 
             {/* Project Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {projects.map((project, idx) => (
+              {filteredProjects.map((project, idx) => (
                 <div 
-                  key={project.id || idx} 
+                  key={project._id || project.id || idx} 
                   className="group bg-surface-container-lowest rounded-xl border border-surface-variant p-4 flex flex-col justify-between hover:border-outline-variant hover:shadow-sm cursor-pointer transition-all"
                   onClick={() => handleSelectProject(project)}
                 >
@@ -142,7 +127,7 @@ export default function ProjectsDashboard() {
                           <h3 className="font-headline-sm text-headline-sm font-semibold text-on-surface group-hover:text-primary transition-colors">{project.name}</h3>
                           <div className="flex items-center space-x-1.5 mt-0.5">
                             {project.role && <Badge variant="admin">{project.role}</Badge>}
-                            <span className="text-on-surface-variant text-[11px]">• {project.category}</span>
+                            <span className="text-on-surface-variant text-[11px]">• {project.category || 'General'}</span>
                           </div>
                         </div>
                       </div>
@@ -151,24 +136,15 @@ export default function ProjectsDashboard() {
                       {project.description}
                     </p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-surface-variant/60 space-y-3">
-                    <div>
-                      <div className="flex justify-between text-label-sm font-label-sm mb-1">
-                        <span className="text-on-surface-variant font-medium">{project.completedTasks}/{project.totalTasks} tasks</span>
-                        <span className="text-on-surface font-semibold">{project.progress}%</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                        <div className="bg-primary-container h-full rounded-full" style={{ width: `${project.progress}%` }}></div>
-                      </div>
+                  <div className="mt-4 pt-3 border-t border-surface-variant/60 flex items-center justify-between">
+                    <div className="flex -space-x-1.5 items-center">
+                      {project.members && project.members.map((m, i) => (
+                        <Avatar key={i} src={m.avatar} initials={m.initials} size="sm" extraClasses="border-surface-container-lowest" />
+                      ))}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex -space-x-1.5 items-center">
-                        {project.members && project.members.map((m, i) => (
-                          <Avatar key={i} src={m.avatar} initials={m.initials} size="sm" extraClasses="border-surface-container-lowest" />
-                        ))}
-                      </div>
-                      <span className="font-body-sm text-body-sm text-outline">{project.updatedAt}</span>
-                    </div>
+                    <span className="font-body-sm text-body-sm text-outline">
+                      {new Date(project.createdAt || Date.now()).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -186,6 +162,23 @@ export default function ProjectsDashboard() {
                   </p>
                   <Button variant="secondary" icon="add" onClick={() => setIsModalOpen(true)} className="mt-4">
                     Create New Project
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {projects.length > 0 && filteredProjects.length === 0 && (
+              <div className="mt-8 pt-6 border-t border-surface-variant/60">
+                <div className="bg-surface-container-lowest rounded-xl border border-dashed border-surface-variant p-8 flex flex-col items-center justify-center text-center">
+                  <div className="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant mb-3">
+                    <span className="material-symbols-outlined text-[24px]">search_off</span>
+                  </div>
+                  <h4 className="font-headline-sm text-headline-sm font-semibold text-on-surface">No projects match your search</h4>
+                  <p className="font-body-md text-body-md text-on-surface-variant mt-1 max-w-md">
+                    Try adjusting your search term to find what you're looking for.
+                  </p>
+                  <Button variant="secondary" onClick={() => setSearchQuery('')} className="mt-4">
+                    Clear Search
                   </Button>
                 </div>
               </div>

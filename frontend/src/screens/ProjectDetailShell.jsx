@@ -71,6 +71,9 @@ export default function ProjectDetailShell() {
           <Link to={`/projects/${projectId}/members`} className={`pb-3 font-label-md transition-colors ${currentTab === 'members' ? 'border-b-2 border-primary text-primary font-semibold' : 'text-on-surface-variant hover:text-on-surface'}`}>
             Members
           </Link>
+          <Link to={`/projects/${projectId}/settings`} className={`pb-3 font-label-md transition-colors ${currentTab === 'settings' ? 'border-b-2 border-primary text-primary font-semibold' : 'text-on-surface-variant hover:text-on-surface'}`}>
+            Settings
+          </Link>
         </div>
       </header>
 

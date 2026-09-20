@@ -72,10 +72,33 @@ export function useProject(projectId) {
     }
   }, [projectId]);
 
+  const updateProject = useCallback(async (data) => {
+    try {
+      const updatedProject = await apiClient.put(`/projects/${projectId}`, data);
+      setProject(updatedProject);
+      return updatedProject;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, [projectId]);
+
+  const deleteProject = useCallback(async () => {
+    try {
+      await apiClient.delete(`/projects/${projectId}`);
+      setProject(null);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, [projectId]);
+
   return {
     project,
     isLoading,
     error,
-    fetchProject
+    fetchProject,
+    updateProject,
+    deleteProject
   };
 }

@@ -12,6 +12,7 @@ import ProjectDetailTasks from '../screens/ProjectDetailTasks';
 import ProjectDetailNotesMembers from '../screens/ProjectDetailNotesMembers';
 
 import ProjectDetailShell from '../screens/ProjectDetailShell';
+import ProjectDetailSettings from '../screens/ProjectDetailSettings';
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
@@ -73,6 +74,7 @@ export function AppRoutes() {
             <Route path="tasks" element={<ProjectDetailTasks />} />
             <Route path="notes" element={<ProjectDetailNotesMembers />} />
             <Route path="members" element={<ProjectDetailNotesMembers />} />
+            <Route path="settings" element={<ProjectDetailSettings />} />
             <Route index element={<Navigate to="tasks" replace />} />
           </Route>
         </Route>
