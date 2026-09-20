@@ -3,7 +3,8 @@
  * Centralizes all outgoing HTTP requests to the backend.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const rawBaseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').trim().replace(/\/+$/, '');
+const BASE_URL = rawBaseUrl.endsWith('/api/v1') ? rawBaseUrl : `${rawBaseUrl}/api/v1`;
 
 async function fetchWithAuth(endpoint, options = {}) {
   let token = localStorage.getItem('token');
