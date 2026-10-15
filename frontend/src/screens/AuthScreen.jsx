@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Input } from '../components/ui';
 
 export default function AuthScreen({ onSubmit, isLoading }) {
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'signup'
   const [showPassword, setShowPassword] = useState(false);
+  const [isSlow, setIsSlow] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     username: '',
     password: ''
   });
+
+  useEffect(() => {
+    let timer;
+    if (isLoading) {
+      timer = setTimeout(() => {
+        setIsSlow(true);
+      }, 5000);
+    } else {
+      setIsSlow(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   const handleChange = (e, field) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -95,6 +108,17 @@ export default function AuthScreen({ onSubmit, isLoading }) {
             <Button type="submit" variant="primary" className="w-full mt-4 h-10 text-body-md" disabled={isLoading}>
               {isLoading ? 'Processing...' : 'Continue to Workspace'}
             </Button>
+
+            {isSlow && (
+              <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-body-sm flex items-center gap-2.5 animate-pulse">
+                <span className="material-symbols-outlined text-[18px] text-amber-600 dark:text-amber-400 animate-spin shrink-0">
+                  progress_activity
+                </span>
+                <span className="font-medium text-xs leading-relaxed">
+                  Backend is a bit slow, but dont worry it will work😉
+                </span>
+              </div>
+            )}
           </form>
 
           <div className="mt-6 flex items-center">

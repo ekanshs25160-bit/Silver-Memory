@@ -9,6 +9,19 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSlowLoading, setIsSlowLoading] = useState(false);
+
+  useEffect(() => {
+    let timer;
+    if (isLoading) {
+      timer = setTimeout(() => {
+        setIsSlowLoading(true);
+      }, 5000);
+    } else {
+      setIsSlowLoading(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   // Initialize session on mount
   useEffect(() => {
@@ -90,8 +103,13 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={value}>
       {isLoading ? (
-        <div className="min-h-screen flex items-center justify-center bg-background text-on-surface">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-background text-on-surface p-4 gap-3">
           <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
+          {isSlowLoading && (
+            <div className="px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-body-sm font-medium animate-pulse text-center max-w-sm">
+              Backend is a bit slow, but dont worry it will work😉
+            </div>
+          )}
         </div>
       ) : (
         children
