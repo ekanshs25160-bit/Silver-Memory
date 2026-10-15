@@ -30,20 +30,20 @@ export default function ProjectDetailShell() {
   return (
     <div className="bg-background text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col">
       {/* HEADER */}
-      <header className="bg-surface-container-lowest border-b border-surface-variant px-6 py-4">
-        <div className="flex items-start justify-between">
+      <header className="bg-surface-container-lowest border-b border-surface-variant px-4 sm:px-6 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2 text-body-sm text-on-surface-variant mb-1">
               <Link to="/" className="hover:text-on-surface transition-colors">Projects</Link>
               <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-              <span className="text-on-surface font-medium">{project.name}</span>
+              <span className="text-on-surface font-medium truncate max-w-[200px] sm:max-w-none">{project.name}</span>
             </div>
             <div className="flex items-center space-x-3">
-              <h1 className="font-headline-xl text-headline-xl font-bold tracking-tight text-on-surface">{project.name}</h1>
+              <h1 className="font-headline-lg sm:font-headline-xl text-headline-lg sm:text-headline-xl font-bold tracking-tight text-on-surface truncate">{project.name}</h1>
               <Badge variant="success">Active</Badge>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 self-end sm:self-auto">
             <div className="flex -space-x-1.5 items-center mr-2">
               {members.slice(0, 3).map(member => (
                 <div key={member._id || member.id} className="relative ring-2 ring-surface-container-lowest rounded-full overflow-hidden w-8 h-8">
@@ -61,7 +61,7 @@ export default function ProjectDetailShell() {
         </div>
 
         {/* TABS */}
-        <div className="flex space-x-6 mt-6 border-b border-surface-variant">
+        <div className="flex space-x-6 mt-6 border-b border-surface-variant overflow-x-auto">
           <Link to={`/projects/${projectId}/tasks`} className={`pb-3 font-label-md transition-colors ${currentTab === 'tasks' ? 'border-b-2 border-primary text-primary font-semibold' : 'text-on-surface-variant hover:text-on-surface'}`}>
             Tasks
           </Link>

@@ -24,8 +24,8 @@ export default function ProjectDetailTasks() {
   if (isLoading) return <div className="p-6">Loading tasks...</div>;
 
   return (
-    <div className="flex-1 overflow-auto p-6 flex gap-6">
-      <div className="flex-1 space-y-8">
+    <div className="flex-1 overflow-auto p-4 sm:p-6 flex flex-col xl:flex-row gap-6">
+      <div className="flex-1 space-y-8 min-w-0">
         {Object.entries(groupedTasks).map(([status, statusTasks]) => (
           <div key={status} className="space-y-3">
             <div className="flex items-center space-x-2">
@@ -101,7 +101,7 @@ export default function ProjectDetailTasks() {
       </div>
 
       {/* METRICS PANEL */}
-      <aside className="w-80 space-y-6">
+      <aside className="w-full xl:w-80 space-y-6 shrink-0">
         <div className="bg-surface-container-lowest border border-surface-variant rounded-xl p-5">
           <h3 className="font-headline-sm font-semibold mb-4">Sprint Metrics</h3>
           <div className="space-y-4">

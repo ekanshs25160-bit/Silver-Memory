@@ -40,9 +40,9 @@ export default function ProjectDetailNotesMembers() {
   };
 
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex flex-col lg:flex-row gap-6 p-4 sm:p-6">
       {/* NOTES FEED */}
-      <div className="flex-1 space-y-6">
+      <div className="flex-1 space-y-6 min-w-0">
         <div className="flex items-center justify-between">
           <h2 className="font-headline-md font-semibold text-on-surface">Project Notes</h2>
           <Button variant="primary" icon="edit" onClick={() => noteInputRef.current?.focus()}>New Note</Button>
@@ -101,7 +101,7 @@ export default function ProjectDetailNotesMembers() {
       </div>
 
       {/* MEMBERS PANEL */}
-      <aside className="w-80 space-y-6">
+      <aside className="w-full lg:w-80 space-y-6 shrink-0">
         <div className="bg-surface-container-lowest border border-surface-variant rounded-xl p-5">
           <h3 className="font-headline-sm font-semibold mb-4 text-on-surface">Team Members</h3>
           

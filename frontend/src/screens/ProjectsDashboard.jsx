@@ -9,6 +9,7 @@ export default function ProjectsDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', description: '', visibility: 'private', lead: '', template: 'blank' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -36,8 +37,17 @@ export default function ProjectsDashboard() {
   return (
     <div className="bg-background text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col">
       {/* TOP NAVIGATION */}
-      <header className="bg-surface-container-lowest flex justify-between items-center w-full px-6 h-12 border-b border-surface-variant sticky top-0 z-30 select-none">
-        <div className="flex items-center space-x-6">
+      <header className="bg-surface-container-lowest flex justify-between items-center w-full px-4 sm:px-6 h-12 border-b border-surface-variant sticky top-0 z-30 select-none">
+        <div className="flex items-center space-x-3 sm:space-x-6">
+          {/* Mobile sidebar hamburger button */}
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="lg:hidden p-1 -ml-1 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors"
+            aria-label="Open navigation menu"
+          >
+            <span className="material-symbols-outlined text-[20px]">menu</span>
+          </button>
+
           <div className="flex items-center space-x-2.5 cursor-pointer">
             <div className="w-6 h-6 rounded bg-primary-container flex items-center justify-center text-on-primary font-headline-sm text-headline-sm shadow-sm">
               <span className="material-symbols-outlined text-[14px]">grid_view</span>
@@ -80,11 +90,65 @@ export default function ProjectsDashboard() {
         </div>
       </header>
 
+      {/* MOBILE DRAWER OVERLAY & SIDEBAR */}
+      <div 
+        className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+      >
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-xs" 
+          onClick={() => setIsSidebarOpen(false)} 
+        />
+        <aside 
+          className={`fixed top-0 bottom-0 left-0 w-64 bg-surface-container-lowest border-r border-surface-variant p-4 flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-in-out z-50 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-surface-variant">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 rounded bg-primary-container flex items-center justify-center text-on-primary font-headline-sm text-headline-sm shadow-sm">
+                  <span className="material-symbols-outlined text-[14px]">grid_view</span>
+                </div>
+                <span className="font-headline-sm text-headline-sm font-semibold text-on-surface">Silver Memory</span>
+              </div>
+              <button 
+                onClick={() => setIsSidebarOpen(false)}
+                className="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container-low"
+                aria-label="Close sidebar"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <button 
+              onClick={() => { setIsModalOpen(true); setIsSidebarOpen(false); }}
+              className="w-full flex items-center justify-center space-x-1.5 h-8 px-3 rounded-lg border border-surface-variant bg-surface-container-lowest hover:bg-surface-container-low font-label-md text-label-md text-on-surface font-medium transition-colors"
+            >
+              <span className="material-symbols-outlined text-[16px] text-primary">add_task</span>
+              <span>+ Add Task</span>
+            </button>
+            <nav className="space-y-1">
+              {['Tasks', 'Notes'].map((item) => (
+                <a 
+                  key={item} 
+                  href="#" 
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="flex items-center space-x-2.5 text-on-surface-variant hover:text-on-surface rounded-lg px-3 py-2 font-label-md text-label-md hover:bg-surface-container-low transition-colors"
+                >
+                  <span>{item}</span>
+                </a>
+              ))}
+            </nav>
+          </div>
+        </aside>
+      </div>
+
       <div className="flex-1 flex overflow-hidden">
-        {/* LEFT SIDEBAR */}
+        {/* DESKTOP LEFT SIDEBAR */}
         <aside className="hidden lg:flex flex-col justify-between h-[calc(100vh-48px)] w-60 p-3 border-r border-surface-variant bg-surface-container-lowest shrink-0 select-none">
           <div className="space-y-4">
-            <button className="w-full flex items-center justify-center space-x-1.5 h-8 px-3 rounded-lg border border-surface-variant bg-surface-container-lowest hover:bg-surface-container-low font-label-md text-label-md text-on-surface font-medium transition-colors">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="w-full flex items-center justify-center space-x-1.5 h-8 px-3 rounded-lg border border-surface-variant bg-surface-container-lowest hover:bg-surface-container-low font-label-md text-label-md text-on-surface font-medium transition-colors"
+            >
               <span className="material-symbols-outlined text-[16px] text-primary">add_task</span>
               <span>+ Add Task</span>
             </button>
